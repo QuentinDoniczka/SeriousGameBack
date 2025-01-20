@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controler", "Controler\Controler.csproj", "{B71ED4CF-C77A-4DAB-88CA-3B69999F4376}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller", "Controller\Controller.csproj", "{B71ED4CF-C77A-4DAB-88CA-3B69999F4376}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{0D79A135-2FC3-46C4-8B97-80A9756F76C5}"
 EndProject
@@ -9,6 +9,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItem", "SolutionItem", "{8CC5BDD0-F1B4-43E4-A044-93D2CFB94C82}"
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
+		exemple.env = exemple.env
 	EndProjectSection
 EndProject
 Global

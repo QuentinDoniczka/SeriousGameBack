@@ -7,5 +7,6 @@ public interface IUserService
 {
     Task<string> AuthenticateAsync(string email, string password);
     Task<RegisterResultDTO> RegisterAsync(RegisterDTO registerDto);
-    Task<List<LoginResultDTO>> GetAllAsync();
+    Task<List<UserResultDTO>> GetAllAsync();
+    Task<bool> UpdateDescriptionAsync(string email, string? description);
 }

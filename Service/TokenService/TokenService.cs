@@ -35,6 +35,7 @@ namespace Service.TokenService
             var roles = await _userManager.GetRolesAsync(user);
             var roleClaims = roles.Select(r => new Claim(ClaimTypes.Role, r));
             var email = user.Email ?? "";
+            var username = user.UserName ?? "";
 
             var claims = new List<Claim>
             {
@@ -42,10 +43,9 @@ namespace Service.TokenService
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("custom:userId", user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, email),
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
+                new Claim("email", email),
+                new Claim(JwtRegisteredClaimNames.Name, username),
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -28,13 +28,61 @@ public class UserService : IUserService
 
     public async Task<RegisterResultDTO> RegisterAsync(RegisterDTO registerDto)
     {
-        // Implement registration logic
-        throw new NotImplementedException();
+        var result = new RegisterResultDTO();
+        
+        var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
+        if (existingUser != null)
+        {
+            result.Success = false;
+            result.Errors.Add("Email already exists");
+            return result;
+        }
+        
+        var user = new User
+        {
+            UserName = registerDto.Username,
+            Email = registerDto.Email
+        };
+        
+        var createResult = await _userManager.CreateAsync(user, registerDto.Password);
+
+        if (createResult.Succeeded)
+        {
+            result.Success = true;
+        }
+        else
+        {
+            result.Success = false;
+            result.Errors.AddRange(createResult.Errors.Select(e => e.Description));
+        }
+
+        return result;
     }
 
-    public async Task<List<LoginResultDTO>> GetAllAsync()
+    public async Task<List<UserResultDTO>> GetAllAsync()
     {
-        // Implement get all users logic
-        throw new NotImplementedException();
+        var users = _userManager.Users.ToList();
+        var userDTOs = users.Select(user => new UserResultDTO
+        {
+            Email = user.Email ?? string.Empty,
+            Username = user.UserName ?? string.Empty,
+            Description = user.Description
+        }).ToList();
+    
+        return userDTOs;
+    }
+
+    public async Task<bool> UpdateDescriptionAsync(string email, string? description)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return false;
+        }
+
+        user.Description = description;
+        var result = await _userManager.UpdateAsync(user);
+
+        return result.Succeeded;
     }
 }

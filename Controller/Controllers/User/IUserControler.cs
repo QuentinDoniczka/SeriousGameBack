@@ -9,4 +9,5 @@ public interface IUserController
     Task<ActionResult<LoginResultDTO>> Login(LoginDTO loginDto);
     Task<ActionResult<RegisterResultDTO>> Register(RegisterDTO registerDto);
     Task<ActionResult<List<UserResultDTO>>> GetAllUsers();
+    Task<ActionResult> UpdateDescription(DescriptionDTO updateDescriptionDto);
 }

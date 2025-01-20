@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Model.DTOs.Input;
 using Model.DTOs.Output;
 using Service.UserService;
@@ -19,6 +20,7 @@ public class UserController : ControllerBase, IUserController
     }
 
     [HttpPost("login")]
+    
     public async Task<ActionResult<LoginResultDTO>> Login([FromBody] LoginDTO loginDto)
     {
         var token = await _userService.AuthenticateAsync(loginDto.Email, loginDto.Password);
@@ -30,11 +32,14 @@ public class UserController : ControllerBase, IUserController
         var jwtToken = jwtTokenHandler.ReadJwtToken(token);
         var expiration = jwtToken.ValidTo;
         var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value ?? string.Empty;
+        var username = jwtToken.Claims.FirstOrDefault(c => c.Type == "name")?.Value ?? string.Empty;
 
         var loginResponse = new LoginResultDTO
     {
         Token = token,
-        Email = email
+        Expiration = expiration,
+        Email = email,
+        Username = username
     };
 
         return Ok(loginResponse);
@@ -57,5 +62,21 @@ public class UserController : ControllerBase, IUserController
     {
         var users = await _userService.GetAllAsync();
         return Ok(users);
+    }
+    [HttpPut("description")]
+    [Authorize]
+    public async Task<ActionResult> UpdateDescription([FromBody] DescriptionDTO updateDescriptionDto)
+    {
+        var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value 
+                        ?? throw new UnauthorizedAccessException("No email found in token");
+
+        var result = await _userService.UpdateDescriptionAsync(userEmail, updateDescriptionDto.Description);
+
+        if (!result)
+        {
+            return BadRequest("Failed to update description.");
+        }
+
+        return Ok("Description updated successfully.");
     }
 }

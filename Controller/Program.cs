@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,8 +7,10 @@ using Model;
 using Model.Data;
 using System.Text;
 using dotenv.net;
+using Microsoft.OpenApi.Models;
 using Service.UserService;
 using Service.TokenService;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,20 +108,61 @@ void ConfigureServices(IServiceCollection services, IConfiguration config)
 
     // Add other services
     services.AddControllers();
+    services.AddRouting(options => options.LowercaseUrls = true);
     services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo 
+        { 
+            Title = "Mobile Serious Game API", 
+            Version = "v1" 
+        });
+    
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+        
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+
+        c.EnableAnnotations();
+    
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
+    
+        var modelXmlFile = "Model.xml";
+        var modelXmlPath = Path.Combine(AppContext.BaseDirectory, modelXmlFile);
+        if (File.Exists(modelXmlPath))
+        {
+            c.IncludeXmlComments(modelXmlPath);
+        }
+    });
 }
 
 async Task InitializeDatabase(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     await context.Database.MigrateAsync();
-
-    // Vous pouvez ajouter ici l'initialisation des rôles et des utilisateurs par défaut si nécessaire
 }
 
 void ConfigureMiddleware(WebApplication app)
