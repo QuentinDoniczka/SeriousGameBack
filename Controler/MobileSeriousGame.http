@@ -1,0 +1,6 @@
+@MobileSeriousGame_HostAddress = http://localhost:5100
+
+GET {{MobileSeriousGame_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,67 @@
+@"
+# IDE - Rider
+.idea/
+*.sln.iml
+.idea/*.iml
+.idea/*.xml
+
+# .NET Core
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.dbmdl
+*.jfm
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+# Environment variables & secrets
+*.env
+appsettings.*.json
+!appsettings.json
+!appsettings.Example.json
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+packages/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userprefs
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db" | Out-File -Encoding utf8 .gitignore
