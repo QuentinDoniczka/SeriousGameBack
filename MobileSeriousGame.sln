@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItem", "SolutionIte
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
 		exemple.env = exemple.env
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Global
