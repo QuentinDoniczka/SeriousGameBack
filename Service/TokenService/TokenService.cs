@@ -3,19 +3,20 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Model.Data;
 
 namespace Service.TokenService
 {
     public class TokenService : ITokenService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly string _key;
         private readonly string _issuer;
         private readonly string _audience;
         private readonly int _expiration;
 
         public TokenService(
-            UserManager<IdentityUser> userManager, 
+            UserManager<User> userManager, 
             string key, 
             string issuer, 
             string audience, 
@@ -28,7 +29,7 @@ namespace Service.TokenService
             _expiration = int.Parse(expiration);
         }
 
-        public async Task<string> GenerateJwtToken(IdentityUser user)
+        public async Task<string> GenerateJwtToken(User user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
             var roles = await _userManager.GetRolesAsync(user);

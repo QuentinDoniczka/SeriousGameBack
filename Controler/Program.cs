@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Model;
+using Model.Data;
 using System.Text;
 using dotenv.net;
 using Service.UserService;
@@ -45,7 +46,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration config)
     });
 
     // Identity configuration with password requirements
-    services.AddIdentity<IdentityUser, IdentityRole>(options =>
+    services.AddIdentity<User, IdentityRole>(options =>
     {
         options.SignIn.RequireConfirmedAccount = true;
         options.Password.RequiredLength = 12;
@@ -93,7 +94,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration config)
     // Register Services
     services.AddScoped<ITokenService>(provider => 
         new TokenService(
-            provider.GetRequiredService<UserManager<IdentityUser>>(),
+            provider.GetRequiredService<UserManager<User>>(),
             jwtKey,
             jwtIssuer,
             jwtAudience,
@@ -112,7 +113,7 @@ async Task InitializeDatabase(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     await context.Database.MigrateAsync();
@@ -130,8 +131,7 @@ void ConfigureMiddleware(WebApplication app)
 
     app.UseHttpsRedirection();
     
-    // Important : L'ordre est crucial ici
-    app.UseAuthentication(); // Doit être avant UseAuthorization
+    app.UseAuthentication();
     app.UseAuthorization();
     
     app.MapControllers();

@@ -1,12 +1,13 @@
 ﻿
 
 using Microsoft.AspNetCore.Identity;
+using Model.Data;
 
 namespace Service.TokenService
 {
     public interface ITokenService
     {
-        Task<string> GenerateJwtToken(IdentityUser user);
+        Task<string> GenerateJwtToken(User user);
         
     }
 }
