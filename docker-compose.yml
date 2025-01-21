@@ -13,14 +13,14 @@ services:
       - mysql_data:/var/lib/mysql
     restart: always
 
-  mobileseriousgame.api:
-    image: mobileseriousgame.api
+  controller:  # Changé le nom du service
+    image: controller  # Changé le nom de l'image
     build:
       context: .
-      dockerfile: MobileSeriousGame.API/Dockerfile
+      dockerfile: Controller/Dockerfile
     ports:
-      - "80:80"
-      - "443:443"
+      - ${PORT_HTTP}:80
+      - ${PORT_HTTPS}:443
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       ASPNETCORE_URLS: "https://+;http://+"
@@ -32,11 +32,11 @@ services:
       JWT_KEY: ${JWT_KEY}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_AUDIENCE: ${JWT_AUDIENCE}
-      JWT_EXPIRATION_IN_MINUTES: ${JWT_EXPIRATION}
+      JWT_EXPIRATION_IN_MINUTES: ${JWT_EXPIRATION_IN_MINUTES}
     depends_on:
       - mysql
     restart: always
-    entrypoint: [ "sh", "-c", "sleep 10 && dotnet MobileSeriousGame.API.dll" ]
+    entrypoint: [ "sh", "-c", "sleep 10 && dotnet Controller.dll" ]  # Changé le nom du DLL
 
 volumes:
   mysql_data:
